@@ -19,3 +19,30 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+.bg-blue-ray {
+  background: linear-gradient(45deg, transparent 30%, rgba(0, 112, 255, 0.15) 50%, transparent 70%);
+  background-size: 200%;
+  animation: moveDiagonal 7s linear infinite;
+}
+
+@keyframes moveDiagonal {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Navbar fixed styling */
+.sticky-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+

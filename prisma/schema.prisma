@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// schema.prisma
+
+// Define the User model
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  accounts     UserBrokerAccount[]
+  trades       Trade[]
+}
+
+// Define the Broker model
+model Broker {
+  id           String              @id @default(cuid())
+  name         String
+  apiEndpoint  String
+  schemaInfo   Json
+  createdAt    DateTime            @default(now())
+  accounts     UserBrokerAccount[]
+}
+
+// Define the UserBrokerAccount model to link Users and Brokers
+model UserBrokerAccount {
+  id           String      @id @default(cuid())
+  user         User        @relation(fields: [userId], references: [id])
+  userId       String
+  broker       Broker      @relation(fields: [brokerId], references: [id])
+  brokerId     String
+  clientId     String
+  accessToken  String
+  accountNumber String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  holdings     UserHoldings[]
+  positions    UserPositions[]
+  trades       Trade[]
+}
+
+// Define the Stock model for stock information
+model Stock {
+  id          String              @id @default(cuid())
+  symbol      String              @unique
+  name        String
+  securityId  String              @unique
+  sector      String?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  priceHistory StockPriceHistory[]
+  holdings     UserHoldings[]
+  positions    UserPositions[]
+  trades       Trade[]
+}
+
+// Define the StockPriceHistory model for daily stock price data
+model StockPriceHistory {
+  id          String    @id @default(cuid())
+  stock       Stock     @relation(fields: [stockId], references: [id])
+  stockId     String
+  date        DateTime
+  openPrice   Float
+  closePrice  Float
+  highPrice   Float
+  lowPrice    Float
+}
+
+// Define the UserHoldings model to track user holdings
+model UserHoldings {
+  id           String            @id @default(cuid())
+  userAccount  UserBrokerAccount @relation(fields: [userAccountId], references: [id])
+  userAccountId String
+  stock        Stock             @relation(fields: [stockId], references: [id])
+  stockId      String
+  quantity     Float
+  avgPrice     Float
+  lastUpdated  DateTime          @default(now())
+}
+
+// Define the UserPositions model to track open positions
+model UserPositions {
+  id           String            @id @default(cuid())
+  userAccount  UserBrokerAccount @relation(fields: [userAccountId], references: [id])
+  userAccountId String
+  stock        Stock             @relation(fields: [stockId], references: [id])
+  stockId      String
+  positionType String
+  quantity     Float
+  avgEntryPrice Float
+  lastUpdated  DateTime          @default(now())
+}
+
+// Define the Trade model to record user trades
+model Trade {
+  id           String            @id @default(cuid())
+  userAccount  UserBrokerAccount @relation(fields: [userAccountId], references: [id])
+  userAccountId String
+  stock        Stock             @relation(fields: [stockId], references: [id])
+  stockId      String
+  tradeType    String            // Buy or Sell
+  quantity     Float
+  price        Float
+  executedAt   DateTime          @default(now())
+ user         User        @relation(fields: [userId], references: [id])
+  userId       String
+}
