@@ -4,18 +4,37 @@ import { useState } from "react";
 import Button from "@/components/Button";
 import Image from "next/image";
 import GoogleButton from "./GoogleButton";
+import { toast } from 'sonner';
+import { useRouter } from "next/navigation";
+import { signIn } from 'next-auth/react';
+
 
 export default function SignupForm() {
+const router = useRouter()
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
+    const loadId = toast.loading('Signing in...');
+    if (e) {
+      e.preventDefault();
+    }
+
+    const res = await signIn('credentials', {
+      username: email,
+      password: password,
+      redirect: false,
+    });
+
+    toast.dismiss(loadId);
+    if (!res?.error) {
+      router.push('/');
+      toast.success('Signed In');
+    } else {
+      toast.error('oops something went wrong..!');
     }
     // Handle API request here
   };
@@ -46,7 +65,7 @@ export default function SignupForm() {
       <div className="flex-1 flex flex-col justify-start items-center p-6">
         <div className="w-full max-w-md">
           {/* Google Sign In */}
-          <GoogleButton text="Sign in with Google" />
+          <GoogleButton text="Sign in with Google"/>
 
           {/* Divider */}
           <div className="flex items-center gap-2 mb-4">
