@@ -18,9 +18,9 @@ datasource db {
 // Define the User model
 model User {
   id           String    @id @default(cuid())
-  name         String
+  name         String?
   email        String    @unique
-  password String
+  password     String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   accounts     UserBrokerAccount[]

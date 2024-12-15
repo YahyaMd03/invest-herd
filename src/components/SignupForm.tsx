@@ -11,6 +11,9 @@ import { signIn } from 'next-auth/react';
 
 export default function SignupForm() {
 const router = useRouter()
+const handleSignIn = async () => {
+  await signIn("credentials", { callbackUrl: "/dashboard" });
+};
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -65,7 +68,7 @@ const router = useRouter()
       <div className="flex-1 flex flex-col justify-start items-center p-6">
         <div className="w-full max-w-md">
           {/* Google Sign In */}
-          <GoogleButton text="Sign in with Google"/>
+          <GoogleButton text="Sign in with Google" />
 
           {/* Divider */}
           <div className="flex items-center gap-2 mb-4">
@@ -144,7 +147,8 @@ const router = useRouter()
             </div>
 
             <div className="flex justify-center items-center">
-              <Button text="Sign Up" variant="primary" />
+              {/* <Button text="Sign Up" variant="primary" /> */}
+              <button type='submit' onClick={handleSignIn}> click</button>
             </div>
           </form>
         </div>

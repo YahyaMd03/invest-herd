@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/db'; 
+import { getServerSession } from 'next-auth';
+
 
 
 
@@ -34,7 +36,7 @@ export async function POST(request: Request) {
       data: {
         name: body.name,
         email: body.email,
-        passwordHash: body.passwordHash,
+        password: body.passwordHash,
       },
     });
 
@@ -50,4 +52,11 @@ export async function POST(request: Request) {
     // For other errors, return a 500 status
     return NextResponse.json({ error: 'Unable to create user' }, { status: 500 });
   }
+}
+
+export async function GET(){
+  const session = await getServerSession();
+  return NextResponse.json({
+    id: session
+  })
 }

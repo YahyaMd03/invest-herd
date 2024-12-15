@@ -1,5 +1,6 @@
 import { FaDownload, FaPlus, FaBell } from 'react-icons/fa';
 import Image from 'next/image';
+import AddBrokerDialog from './AddBrokerDialog';
 
 const TopBar = () => {
     function logging(){
@@ -13,7 +14,7 @@ const TopBar = () => {
 
       <div className="flex items-center space-x-10">
         <div onClick={() => { logging() }}><FaDownload size={25} /></div>
-        <div><FaPlus size={25} /></div>
+        <div><AddBrokerDialog /></div>
         <div><FaBell size={25} /></div>
         
         <div className="relative">

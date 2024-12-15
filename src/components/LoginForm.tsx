@@ -3,6 +3,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import GoogleButton from './GoogleButton';
 import { signIn } from 'next-auth/react';
 
 export default function LoginForm() {
@@ -10,9 +11,20 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+ 
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add your login logic here
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false, // Prevent automatic redirection
+    });
+
+    if (res?.error) {
+      setError(res.error);
+    } else {
+      router.push("/dashboard"); // Navigate to dashboard on successful login
+    }
   };
 
   function togglePasswordVisibility() {
@@ -23,6 +35,14 @@ export default function LoginForm() {
     <section className="flex justify-center items-center h-screen">
       <div className="p-8 rounded-lg shadow-md w-full max-w-md mb-10">
         <h2 className="text-3xl font-semibold text-center text-gray-800 pb-6">Login to InvestHerd</h2>
+        <GoogleButton text="Login with Google" />
+         {/* Divider */}
+         <div className="flex items-center gap-2 mb-4">
+            <div className="flex-grow h-px bg-gray-300"></div>
+            <span className="text-sm text-gray-500">or</span>
+            <div className="flex-grow h-px bg-gray-300"></div>
+          </div>
+
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email Field */}
@@ -104,6 +124,7 @@ export default function LoginForm() {
           {/* Submit Button */}
           <button
             type="submit"
+            onClick={handleSubmit}
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-500 transition-colors font-medium text-lg"
           >
             Log In

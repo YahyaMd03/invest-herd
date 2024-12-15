@@ -1,8 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { signIn } from "next-auth/react";
 
-export default function GoogleButton({text}: {text: string}) {
+export default function GoogleButton({text}: {text: string}, ) {
+  const handleGoogleSignIn = async () => {
+    await signIn("google", { callbackUrl: "/dashboard" });
+  };
   return (
     <motion.div
       className="flex flex-row items-center justify-center w-full mb-4 border-2 border-blue-500 rounded-lg p-3 gap-2 cursor-pointer"
@@ -11,6 +15,7 @@ export default function GoogleButton({text}: {text: string}) {
       whileHover={{ scale: 1.05, boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)" }}
       whileTap={{ scale: 0.95 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
+      onClick={handleGoogleSignIn}
     >
       <span className="text-blue-500 font-medium">{text}</span>
       <motion.div
